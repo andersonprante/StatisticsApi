@@ -79,9 +79,9 @@ class StatisticsApiController extends BaseController
         $value[1] = $acc_planned;
         $value[2] = null;
         if ($flagDay) {
+          $value[2] = $acc_realized;
           if ($key == $today) {
             $flagDay = false;
-            $value[2] = $acc_realized;
           }
         }
         $payload['scurve'][] = $value;
