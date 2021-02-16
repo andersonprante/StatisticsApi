@@ -4,6 +4,7 @@
     </div>
 <?php endif ?>
 
+
 <?php if (count($payload['scurve']) <= 2): ?>
   <p class="alert"><?= t('Not enough data to show the graph.') ?></p>
   <?php return ?>
@@ -22,7 +23,23 @@
 <?php if (empty($payload)): ?>
   <p class="alert"><?= t('Not enough data to show the graph.') ?></p>
 <?php else: ?>
+  <h2><?= t('Full project timeline') ?></h2>
   <?= $this->app->component('chart-s-curve', array(
-      'payload' => $payload['scurve']
-  )) ?>
+    'id' => 'main',
+    'payload' => $payload['scurve']
+    )) ?>
 <?php endif ?>
+
+<?php if (!empty($payload['categories'])): ?>
+  <?php foreach ($payload['categories'] as $idx => $category): ?>
+    <h2><?= $category['name'] ?></h2>
+    <?= $this->app->component('chart-s-curve', array(
+      'id' => $idx,
+      'payload' => $category['tasks1']
+      )) ?>
+  <?php endforeach; ?>
+<?php endif ?>
+
+<pre>
+<?php print_r($payload) ?>
+</pre>
