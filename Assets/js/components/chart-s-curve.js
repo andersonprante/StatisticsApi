@@ -3,9 +3,9 @@ KB.component('chart-s-curve', function (containerElement, options) {
     let { payload, id } = options
     const today = new Date().toISOString().slice(0, 10)
     chart_id = `chart-${id}`
-    console.log(chart_id);
-    console.log(payload);
+
     KB.dom(containerElement).add(KB.dom('div').attr('id', chart_id).build());
+
     c3.generate({
       bindto: d3.select(`#${chart_id}`),
       data: {

@@ -39,7 +39,3 @@
       )) ?>
   <?php endforeach; ?>
 <?php endif ?>
-
-<pre>
-<?php // print_r($payload) ?>
-</pre>

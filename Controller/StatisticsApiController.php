@@ -99,10 +99,7 @@ class StatisticsApiController extends BaseController
       $acc_realized = 0;
       $today = date('Y-m-d');
       $flagDay = true;
-      $first_item = reset($metrics);
       foreach ($metrics as $key => $value) {
-        $acc_planned_old = $acc_planned;
-        $acc_realized_old = $acc_realized;
         $acc_planned += $value[1];
         $acc_realized += $value[2];
         $value[1] = $acc_planned;
@@ -120,10 +117,7 @@ class StatisticsApiController extends BaseController
           $acc_planned = 0;
           $acc_realized = 0;
           $flagDay = true;
-          $first_item = reset($value_category['tasks']);
           foreach ($value_category['tasks'] as $idx_task => $value_task) {
-            $acc_planned_old = $acc_planned;
-            $acc_realized_old = $acc_realized;
             $acc_planned += $payload['categories'][$idx_category]['tasks'][$idx_task][1];
             $acc_realized += $payload['categories'][$idx_category]['tasks'][$idx_task][2];
             $value_task[1] = $acc_planned;
