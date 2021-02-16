@@ -1,6 +1,7 @@
 KB.component('chart-s-curve', function (containerElement, options) {
   this.render = function () {
     let { payload, id } = options
+    const today = new Date().toISOString().slice(0, 10)
     chart_id = `chart-${id}`
     console.log(chart_id);
     console.log(payload);
@@ -12,6 +13,13 @@ KB.component('chart-s-curve', function (containerElement, options) {
         rows: payload,
         type: 'spline'
       },
+      grid: {
+        x: {
+            lines: [
+                {value: today, text: 'Today'},
+            ]
+        }
+    },
       line: {
         connectNull: true,
       },
