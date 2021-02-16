@@ -108,8 +108,11 @@ class StatisticsApiController extends BaseController
         $payload['scurve'][] = $value;
       }
       
-      $payload['info'][] = $without_score . t(" tasks without complexity, these aren't showed in the chart.");
-      $payload['info'][] = $without_date_due . t(' tasks without due date defined, please fix it. When this occur the date due dynamically assigned is for today.');
+      $payload['info'] = [];
+      if ($without_score)
+        $payload['info'][] = $without_score . t(" tasks without complexity, these aren't showed in the chart.");
+      if ($without_date_due)
+        $payload['info'][] = $without_date_due . t(' tasks without due date defined, please fix it. When this occur the date due dynamically assigned is for today.');
       
       if ($project_has_categories) {
         $payload['categories'] = $categories_in_project;
