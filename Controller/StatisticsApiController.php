@@ -64,6 +64,7 @@ class StatisticsApiController extends BaseController
           foreach ($categories_in_project as $key => $category) {
             $categories_in_project[$key]['tasks'][$day] = [
               $day,
+              0,
               0
             ];
           }
@@ -86,6 +87,10 @@ class StatisticsApiController extends BaseController
         if ($project_has_categories && $category_id) {
           $idx = array_search($category_id, array_column($categories_in_project, 'id'));
           $categories_in_project[$idx]['tasks'][$date_due][1] += $value['score'];
+          $date_completed = $value['date_completed'] ? date('Y-m-d', $value['date_completed']) : null;
+          if ($date_completed) {
+            $categories_in_project[$idx]['tasks'][$date_due][2] += $value['score'];
+          }
         }
       }
       
@@ -94,32 +99,39 @@ class StatisticsApiController extends BaseController
       $acc_realized = 0;
       $today = date('Y-m-d');
       $flagDay = true;
+      $first_item = reset($metrics);
       foreach ($metrics as $key => $value) {
         $acc_planned_old = $acc_planned;
+        $acc_realized_old = $acc_realized;
         $acc_planned += $value[1];
         $acc_realized += $value[2];
-        $value[1] = ($acc_planned != 0 && $acc_planned_old == $acc_planned) ? null : $acc_planned;
-        $value[2] = !$flagDay ? null : $acc_realized;
+        $value[1] = (($value[0] == $first_item[0]) || ($acc_planned != 0 && $acc_planned_old != $acc_planned)) ? $acc_planned : null;
+        $value[2] = (($value[0] == $first_item[0]) || ($acc_realized != 0 && $acc_realized_old != $acc_realized && $flagDay)) ? $acc_realized : null;
         $flagDay = $key < $today;
         $payload['scurve'][] = $value;
       }
       
       $payload['info'][] = $without_score . t(" tasks without complexity, these aren't showed in the chart.");
       $payload['info'][] = $without_date_due . t(' tasks without due date defined, please fix it. When this occur the date due dynamically assigned is for today.');
-
+      
       if ($project_has_categories) {
         $payload['categories'] = $categories_in_project;
         foreach ($payload['categories'] as $idx_category => $value_category) {
-          $acc_category = 0;
+          $acc_planned = 0;
+          $acc_realized = 0;
+          $flagDay = true;
+          $first_item = reset($value_category['tasks']);
           foreach ($value_category['tasks'] as $idx_task => $value_task) {
-            $acc_category += $payload['categories'][$idx_category]['tasks'][$idx_task][1];
-
-            $payload['categories'][$idx_category]['tasks1'][] = [
-              $payload['categories'][$idx_category]['tasks'][$idx_task][0],
-              $acc_category
-            ];
+            $acc_planned_old = $acc_planned;
+            $acc_realized_old = $acc_realized;
+            $acc_planned += $payload['categories'][$idx_category]['tasks'][$idx_task][1];
+            $acc_realized += $payload['categories'][$idx_category]['tasks'][$idx_task][2];
+            $value_task[1] = (($value_task[0] == $first_item[0]) || ($acc_planned != 0 && $acc_planned_old != $acc_planned)) ? $acc_planned : null;
+            $value_task[2] = (($value_task[0] == $first_item[0]) || ($acc_realized != 0 && $acc_realized_old != $acc_realized && $flagDay)) ? $acc_realized : null;
+            $payload['categories'][$idx_category]['tasks1'][] = $value_task;
+            $flagDay = $value_task[0] < $today;
           }
-          array_unshift($payload['categories'][$idx_category]['tasks1'], ['Date', 'Planned']);
+          array_unshift($payload['categories'][$idx_category]['tasks1'], ['Date', 'Planned', 'Realized']);
         }
       }
 
