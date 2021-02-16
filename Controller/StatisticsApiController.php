@@ -105,8 +105,8 @@ class StatisticsApiController extends BaseController
         $acc_realized_old = $acc_realized;
         $acc_planned += $value[1];
         $acc_realized += $value[2];
-        $value[1] = (($value[0] == $first_item[0]) || ($acc_planned != 0 && $acc_planned_old != $acc_planned)) ? $acc_planned : null;
-        $value[2] = (($value[0] == $first_item[0]) || ($acc_realized != 0 && $acc_realized_old != $acc_realized && $flagDay)) ? $acc_realized : null;
+        $value[1] = $acc_planned;
+        $value[2] = $flagDay ? $acc_realized : null;
         $flagDay = $key < $today;
         $payload['scurve'][] = $value;
       }
@@ -126,8 +126,8 @@ class StatisticsApiController extends BaseController
             $acc_realized_old = $acc_realized;
             $acc_planned += $payload['categories'][$idx_category]['tasks'][$idx_task][1];
             $acc_realized += $payload['categories'][$idx_category]['tasks'][$idx_task][2];
-            $value_task[1] = (($value_task[0] == $first_item[0]) || ($acc_planned != 0 && $acc_planned_old != $acc_planned)) ? $acc_planned : null;
-            $value_task[2] = (($value_task[0] == $first_item[0]) || ($acc_realized != 0 && $acc_realized_old != $acc_realized && $flagDay)) ? $acc_realized : null;
+            $value_task[1] = $acc_planned;
+            $value_task[2] = $flagDay ? $acc_realized : null;
             $payload['categories'][$idx_category]['tasks1'][] = $value_task;
             $flagDay = $value_task[0] < $today;
           }

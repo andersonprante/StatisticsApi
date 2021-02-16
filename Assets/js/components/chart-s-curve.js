@@ -11,12 +11,14 @@ KB.component('chart-s-curve', function (containerElement, options) {
       data: {
         x: 'Date',
         rows: payload,
-        type: 'spline'
+      },
+      point: {
+        show: false
       },
       grid: {
         x: {
             lines: [
-                {value: today, text: 'Today'},
+                {value: today, text: today},
             ]
         }
     },
