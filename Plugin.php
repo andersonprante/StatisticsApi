@@ -9,11 +9,9 @@ class Plugin extends Base
 {
     public function initialize()
     {
-        $this->hook->on('template:layout:js',
-            array(
-                'template' => 'plugins/StatisticsApi/Assets/js/components/chart-s-curve.js'
-            )
-        );
+        $this->hook->on('template:layout:js', array('template' => 'plugins/StatisticsApi/Assets/js/components/chart-s-curve.js'));
+        $this->hook->on('template:layout:js', array('template' => 'plugins/StatisticsApi/Assets/js/components/chart-s-donut.js'));
+        $this->hook->on('template:layout:js', array('template' => 'plugins/StatisticsApi/Assets/js/components/chart-s-gauge.js'));
         $this->template->hook->attach('template:analytic:sidebar', 'StatisticsApi:analytic/sidebar');
     }
 
